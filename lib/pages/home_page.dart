@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:front_nearby/component/chat_message.dart';
+import 'package:front_nearby/pages/auth_page.dart';
 import 'package:front_nearby/palette.dart';
+import 'package:front_nearby/provider/page_notifier.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget{
   static final String pageName = 'Homepage';
@@ -20,7 +23,14 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text("벗",
           style: TextStyle(fontWeight: FontWeight.bold)),
+        actions: [
+          IconButton(icon: Icon(Icons.logout), onPressed: (){
+            Provider.of<PageNotifier>(context, listen: false)
+                .goToOtherPage(AuthPage.pageName);
+          })
+        ],
       ),
+      
       body: Column(
         children: [
           Expanded(

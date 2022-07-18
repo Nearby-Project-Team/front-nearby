@@ -29,7 +29,7 @@ class ChatMessage extends StatelessWidget {
                   child: SizedBox(
                       height: 90,
                       width: 90,
-                      child: Image.asset('images/logo-noback.png')
+                      child: Image.asset('assets/logo-noback.png')
                   )
                 ),
               ),

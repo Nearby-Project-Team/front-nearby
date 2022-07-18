@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:front_nearby/pages/auth_page.dart';
 import 'package:front_nearby/pages/home_page.dart';
 import 'package:front_nearby/palette.dart';
+import 'package:front_nearby/provider/page_notifier.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -13,24 +16,32 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Palette.newBlue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Navigator(
-          pages:[
-            MaterialPage(
-                key: ValueKey(HomePage.pageName),
-                child: HomePage())
-          ],
-        onPopPage: (route, result){
-            if(!route.didPop(result)){
-              return false;
-            }
-            return true;
-        },
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (_)=>PageNotifier())],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          primarySwatch: Palette.newBlue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: Consumer<PageNotifier>(
+          builder: (context, pageNotifier, child){
+            return Navigator(
+              pages:[
+                MaterialPage(
+                    key: ValueKey(AuthPage.pageName),
+                    child: HomePage()),
+                if(pageNotifier.currentPage == AuthPage.pageName)  AuthPage(),
+              ],
+              onPopPage: (route, result){
+                if(!route.didPop(result)){
+                  return false;
+                }
+                return true;
+              },
+            );
+          },
+        ),
       ),
     );
   }
