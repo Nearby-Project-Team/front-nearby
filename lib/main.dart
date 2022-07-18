@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:front_nearby/home_page.dart';
+import 'package:front_nearby/pages/home_page.dart';
 import 'package:front_nearby/palette.dart';
 
 void main() {
@@ -19,7 +19,19 @@ class MyApp extends StatelessWidget {
         primarySwatch: Palette.newBlue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomePage(),
+      home: Navigator(
+          pages:[
+            MaterialPage(
+                key: ValueKey(HomePage.pageName),
+                child: HomePage())
+          ],
+        onPopPage: (route, result){
+            if(!route.didPop(result)){
+              return false;
+            }
+            return true;
+        },
+      ),
     );
   }
 }

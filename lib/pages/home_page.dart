@@ -1,25 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:front_nearby/component/chat_message.dart';
 import 'package:front_nearby/palette.dart';
 import 'package:logger/logger.dart';
 
 class HomePage extends StatefulWidget{
+  static final String pageName = 'Homepage';
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-
+  final GlobalKey<AnimatedListState> _animListKey = GlobalKey<AnimatedListState>();
   final TextEditingController _textEditingController = TextEditingController();
+  List<String> _chats = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Chat App"),
+        title: const Text("벗",
+          style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Column(
         children: [
-          Expanded(child:ListView(),),
+          Expanded(
+            child:AnimatedList(
+              key: _animListKey,
+              reverse: true,
+              itemBuilder: _buildItem,
+          )),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
             child: Row(
@@ -27,20 +36,19 @@ class _HomePageState extends State<HomePage> {
                   Expanded(
                     child: TextField(
                       controller: _textEditingController,
-                      decoration: InputDecoration( hintText: "메시지 입력창"),
+                      decoration: InputDecoration(hintText: "메시지 입력창"),
                       onSubmitted: _handleSubmitted,
                     ),
                   ),
                   const SizedBox(
                     width: 0.8,
                   ),
-                  TextButton(
-                      onPressed: (){
-                        _handleSubmitted(_textEditingController.text);
-                      },
-                      style: TextButton.styleFrom(
-                          primary: Palette.newBlue),
-                      child: const Text("전송"))
+                  IconButton(onPressed: (){
+                    _handleSubmitted(_textEditingController.text);
+                  },
+                    icon: Icon(Icons.send),
+                    color: Palette.newBlue,
+                  )
                 ]
             ),
           ),
@@ -49,8 +57,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _buildItem(context, index, animation){
+    return ChatMessage(_chats[index], animation: animation);
+  }
+
   void _handleSubmitted(String text){
     Logger().d(text);
     _textEditingController.clear();
+    _chats.insert(0, text);
+    _animListKey.currentState?.insertItem(0);
   }
 }
