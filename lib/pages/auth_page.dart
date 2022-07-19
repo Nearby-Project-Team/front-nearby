@@ -74,7 +74,7 @@ class _AuthWidgetState extends State<AuthWidget> {
                       onPressed: () {
                         if(_formkey.currentState!.validate())
                           {
-                            Logger().d('모든 값이 올바름!');
+                            // Logger().d('모든 값이 올바름!');
                             Provider.of<PageNotifier>(context, listen: false)
                                 .goToMain();
                           }

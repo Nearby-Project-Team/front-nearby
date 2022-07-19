@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [ChangeNotifierProvider(create: (_)=>PageNotifier())],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Nearby project elderly.ver',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Palette.newBlue,
           visualDensity: VisualDensity.adaptivePlatformDensity,
