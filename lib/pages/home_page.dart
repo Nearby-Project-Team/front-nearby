@@ -4,7 +4,6 @@ import 'package:front_nearby/component/chat_message.dart';
 import 'package:front_nearby/pages/auth_page.dart';
 import 'package:front_nearby/palette.dart';
 import 'package:front_nearby/provider/page_notifier.dart';
-import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
@@ -24,20 +23,44 @@ class _HomePageState extends State<HomePage> {
   late stt.SpeechToText _speech;
   bool _isListening = false;
   String _text = '버튼을 누르고 말하세요!';
-  double _confidence = 1.0;
 
+
+  @override
+  void initState() {
+    super.initState();
+    _speech = stt.SpeechToText();
+
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("confident: ${(_confidence*100.0).toStringAsFixed(1)}%",
+        title: Text("벗",
           style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(icon: Icon(Icons.logout), onPressed: (){
             Provider.of<PageNotifier>(context, listen: false)
                 .goToOtherPage(AuthPage.pageName);
           })
+        ],
+      ),
+      body: Column(
+        children: [
+          Expanded(
+              child:AnimatedList(
+                key: _animListKey,
+                reverse: true,
+                itemBuilder: _buildItem,
+              )),
+          //inputSendContainer(),
+          Container(
+            padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
+            child: Text(_text, style: TextStyle(fontSize: 18)),
+          ),
+          const SizedBox(
+            width: 0.8,
+          ),
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -53,55 +76,44 @@ class _HomePageState extends State<HomePage> {
           child: Icon(_isListening ? Icons.mic : Icons.mic_none),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child:AnimatedList(
-              key: _animListKey,
-              reverse: true,
-              itemBuilder: _buildItem,
-          )),
-          //inputSendContainer(),
-        ],
-      )
     );
   }
 
-  Container inputSendContainer() {
-    return Container( // 입력창 & 전송버튼
-          padding: EdgeInsets.symmetric(horizontal: 8.0),
-          child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                    decoration: InputDecoration(hintText: "메시지 입력창"),
-                    onSubmitted: _handleSubmitted,
-                  ),
-                ),
-                const SizedBox(
-                  width: 0.8,
-                ),
-                IconButton(onPressed: (){
-                  _handleSubmitted(_textEditingController.text);
-                },
-                  icon: Icon(Icons.send),
-                  color: Palette.newBlue,
-                ),
-              ]
-          ),
-        );
-  }
+  // Container inputSendContainer() {
+  //   return Container( // 입력창 & 전송버튼
+  //         padding: EdgeInsets.symmetric(horizontal: 8.0),
+  //         child: Row(
+  //             children: [
+  //               Expanded(
+  //                 child: TextField(
+  //                   controller: _textEditingController,
+  //                   decoration: InputDecoration(hintText: "메시지 입력창"),
+  //                   onSubmitted: _handleSubmitted,
+  //                 ),
+  //               ),
+  //               const SizedBox(
+  //                 width: 0.8,
+  //               ),
+  //               IconButton(onPressed: (){
+  //                 _handleSubmitted(_textEditingController.text);
+  //               },
+  //                 icon: Icon(Icons.send),
+  //                 color: Palette.newBlue,
+  //               ),
+  //             ]
+  //         ),
+  //       );
+  // }
 
   Widget _buildItem(context, index, animation){
     return ChatMessage(_chats[index], animation: animation);
   }
 
   void _handleSubmitted(String text){
-    Logger().d(text);
     _textEditingController.clear();
     _chats.insert(0, text);
     _animListKey.currentState?.insertItem(0);
+    _text = '버튼을 누르고 말하세요!';
   }
 
   void _listen() async {
@@ -115,10 +127,8 @@ class _HomePageState extends State<HomePage> {
         _speech.listen(
           onResult: (val) => setState(() {
             _text = val.recognizedWords;
-            if (val.hasConfidenceRating && val.confidence > 0) {
-              _confidence = val.confidence;
-            }
           }),
+          localeId: 'ko',
         );
       }
     } else {
@@ -128,3 +138,4 @@ class _HomePageState extends State<HomePage> {
     }
   }
 }
+

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:front_nearby/palette.dart';
 
@@ -74,7 +74,7 @@ class _AuthWidgetState extends State<AuthWidget> {
                       onPressed: () {
                         if(_formkey.currentState!.validate())
                           {
-                            // Logger().d('모든 값이 올바름!');
+                            permission();
                             Provider.of<PageNotifier>(context, listen: false)
                                 .goToMain();
                           }
@@ -117,5 +117,17 @@ class _AuthWidgetState extends State<AuthWidget> {
                       labelStyle: TextStyle(color: Colors.black54)
                     )
                   );
+  }
+}
+
+
+Future<bool> permission() async {
+  Map<Permission, PermissionStatus> status =
+  await [Permission.speech].request(); // [] 권한배열에 권한을 작성
+
+  if (await Permission.speech.isGranted) {
+    return Future.value(true);
+  } else {
+    return Future.value(false);
   }
 }
