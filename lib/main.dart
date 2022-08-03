@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front_nearby/pages/auth_page.dart';
 import 'package:front_nearby/pages/home_page.dart';
-import 'package:front_nearby/palette.dart';
+import 'package:front_nearby/thema/palette.dart';
 import 'package:front_nearby/provider/page_notifier.dart';
 import 'package:provider/provider.dart';
 

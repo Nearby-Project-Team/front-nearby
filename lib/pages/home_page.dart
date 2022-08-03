@@ -2,8 +2,9 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:flutter/material.dart';
 import 'package:front_nearby/component/chat_message.dart';
 import 'package:front_nearby/pages/auth_page.dart';
-import 'package:front_nearby/palette.dart';
+import 'package:front_nearby/thema/palette.dart';
 import 'package:front_nearby/provider/page_notifier.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
@@ -22,14 +23,13 @@ class _HomePageState extends State<HomePage> {
 
   late stt.SpeechToText _speech;
   bool _isListening = false;
-  String _text = '버튼을 누르고 말하세요!';
+  String _text = ' ';
 
 
   @override
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
-
   }
 
   @override
@@ -56,7 +56,10 @@ class _HomePageState extends State<HomePage> {
           //inputSendContainer(),
           Container(
             padding: const EdgeInsets.fromLTRB(30.0, 30.0, 30.0, 150.0),
-            child: Text(_text, style: TextStyle(fontSize: 18)),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Text(_text, style: TextStyle(fontSize: 18)),
+            ),
           ),
           const SizedBox(
             width: 0.8,
@@ -109,19 +112,19 @@ class _HomePageState extends State<HomePage> {
     return ChatMessage(_chats[index], animation: animation);
   }
 
-  void _handleSubmitted(String text){
+  void _handleSubmitted (String text) async {
     _textEditingController.clear();
     _chats.insert(0, text);
     _animListKey.currentState?.insertItem(0);
-    _text = '버튼을 누르고 말하세요!';
   }
 
   void _listen() async {
     if (!_isListening) {
       bool available = await _speech.initialize(
-        onStatus: (val) => print('onStatus: $val'),
-        onError: (val) => print('onError: $val'),
+        // onStatus: (val) => print('onStatus: $val'),
+        // onError: (val) => print('onError: $val'),
       );
+      _text = ' ';
       if (available) {
         setState(() => _isListening = true);
         _speech.listen(
