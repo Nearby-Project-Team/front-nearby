@@ -18,4 +18,11 @@ class PageNotifier extends ChangeNotifier{
     _currentPage = name;
     notifyListeners();
   }
+
+  String _userId = '';
+  String get userID => _userId;
+
+  void setUserId (id) {
+    _userId = id;
+  }
 }
